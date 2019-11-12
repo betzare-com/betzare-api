@@ -1,4 +1,4 @@
-package com.example.demo.dataresources;
+package com.betzare.api.dataresources;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class PostgresDatasource {
 
-    @Bean
-    @ConfigurationProperties("app.datasource")
-    public HikariDataSource hikariDataSource() {
-        return DataSourceBuilder.create().type(HikariDataSource.class).build();
-    }
+  @Bean
+  @ConfigurationProperties("app.datasource")
+  public HikariDataSource hikariDataSource() {
+    return DataSourceBuilder.create().type(HikariDataSource.class).build();
+  }
 }
 
