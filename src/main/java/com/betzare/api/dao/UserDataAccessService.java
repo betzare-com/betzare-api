@@ -21,19 +21,23 @@ public class UserDataAccessService implements UserDAO {
 
   @Override
   public int addUser(UUID id, User user) {
-    String sql = "INSERT INTO users (id, name) VALUES (?, ?)";
+    String sql = "INSERT INTO users (id, is_confirmed, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?, ?)";
 
-    return jdbcTemplate.update(sql, id, user.getName());
+    return jdbcTemplate.update(sql, id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
   }
 
   @Override
   public Optional<User> getUser(UUID id) {
-    String sql = "SELECT id, name FROM users WHERE id = ?";
+    String sql = "SELECT id, is_confirmed, first_name, last_name, email FROM users WHERE id = ?";
 
     User user = jdbcTemplate.queryForObject(sql, new Object[]{id}, (resultSet, i) -> {
       UUID userId = UUID.fromString(resultSet.getString("id"));
-      String name = resultSet.getString("name");
-      return new User(userId, name);
+      String firstName = resultSet.getString("firstName");
+      String lastName = resultSet.getString("lastName");
+      String email = resultSet.getString("email");
+      String password = resultSet.getString("password");
+      String isConfirmed = resultSet.getString("isConfirmed");
+      return new User(userId, firstName, lastName, email, password, isConfirmed);
     });
 
     return Optional.ofNullable(user);
@@ -41,19 +45,23 @@ public class UserDataAccessService implements UserDAO {
 
   @Override
   public List<User> getUsers() {
-    final String sql = "SELECT id, name FROM users";
+    final String sql = "SELECT id, is_confirmed, first_name, last_name, email FROM users";
     return jdbcTemplate.query(sql, (resultSet, i) -> {
       UUID id = UUID.fromString(resultSet.getString("id"));
-      String name = resultSet.getString("name");
-      return new User(id, name);
+      String firstName = resultSet.getString("firstName");
+      String lastName = resultSet.getString("lastName");
+      String email = resultSet.getString("email");
+      String password = resultSet.getString("password");
+      String isConfirmed = resultSet.getString("isConfirmed");
+      return new User(id, firstName, lastName, email, password, isConfirmed);
     });
   }
 
   @Override
   public int updateUser(UUID id, User user) {
-    String sql = "UPDATE users SET name = ? WHERE id = ?";
+    String sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, is_confirmed = ? WHERE id = ?";
 
-    return jdbcTemplate.update(sql, user.getName(), id);
+    return jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmail(), user.getIsConfirmed(), id);
   }
 
   @Override

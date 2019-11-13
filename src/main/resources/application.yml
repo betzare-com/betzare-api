@@ -1,6 +1,6 @@
 app:
   datasource:
-    jdbc-url: jdbc:postgresql://localhost:5432/demo_spring_boot
+    jdbc-url: jdbc:postgresql://localhost:5432/betzare_api
     username: postgres
-    password: demoprojects
+    password: betzare
     pool-size: 30

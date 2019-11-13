@@ -32,12 +32,12 @@ public class UserService {
     return userDAO.getUsers();
   }
 
-  public int deleteUser(UUID id) {
-    return userDAO.deleteUser(id);
-  }
-
   public int updateUser(UUID id, User userToBeUpdated) {
     return userDAO.updateUser(id, userToBeUpdated);
+  }
+
+  public int deleteUser(UUID id) {
+    return userDAO.deleteUser(id);
   }
 
 }
