@@ -23,7 +23,7 @@ public class UserController {
 
   @PostMapping
   public void addUser(@Valid @NotNull @RequestBody User user) {
-    userService.addUser(user);
+    userService.createUser(user);
   }
 
   @GetMapping(path = "{id}")
@@ -38,8 +38,8 @@ public class UserController {
 
   @PutMapping(path = "{id}")
   public void updateUser(@PathVariable("id") UUID id,
-      @Valid @NotNull @RequestBody User userToBeUpdated) {
-    userService.updateUser(id, userToBeUpdated);
+      @Valid @NotNull @RequestBody User user) {
+    userService.updateUser(id, user);
   }
 
   @DeleteMapping(path = "{id}")

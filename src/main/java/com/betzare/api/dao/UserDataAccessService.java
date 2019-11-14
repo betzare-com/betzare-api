@@ -20,24 +20,26 @@ public class UserDataAccessService implements UserDAO {
   }
 
   @Override
-  public int addUser(UUID id, User user) {
-    String sql = "INSERT INTO users (id, is_confirmed, first_name, last_name, email, password) VALUES (?, ?, ?, ?, ?, ?)";
+  public int createUser(UUID id, User user) {
+    String sql = "INSERT INTO users (id, first_name, last_name, email, password, gender) VALUES (?, ?, ?, ?, ?, ?)";
 
-    return jdbcTemplate.update(sql, id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword());
+    return jdbcTemplate.update(sql, id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getGender().name().toUpperCase());
   }
 
   @Override
   public Optional<User> getUser(UUID id) {
-    String sql = "SELECT id, is_confirmed, first_name, last_name, email FROM users WHERE id = ?";
+    String sql = "SELECT id, first_name, last_name, email, password, gender, is_confirmed FROM users WHERE id = ?";
 
     User user = jdbcTemplate.queryForObject(sql, new Object[]{id}, (resultSet, i) -> {
       UUID userId = UUID.fromString(resultSet.getString("id"));
-      String firstName = resultSet.getString("firstName");
-      String lastName = resultSet.getString("lastName");
+      String firstName = resultSet.getString("first_name");
+      String lastName = resultSet.getString("last_name");
       String email = resultSet.getString("email");
       String password = resultSet.getString("password");
-      String isConfirmed = resultSet.getString("isConfirmed");
-      return new User(userId, firstName, lastName, email, password, isConfirmed);
+      String genderStr = resultSet.getString("gender");
+      User.Gender gender = User.Gender.valueOf(genderStr);
+      Boolean isConfirmed = resultSet.getBoolean("is_confirmed");
+      return new User(userId, firstName, lastName, email, password, gender, isConfirmed);
     });
 
     return Optional.ofNullable(user);
@@ -45,23 +47,46 @@ public class UserDataAccessService implements UserDAO {
 
   @Override
   public List<User> getUsers() {
-    final String sql = "SELECT id, is_confirmed, first_name, last_name, email FROM users";
+    final String sql = "SELECT id, first_name, last_name, email, password, gender, is_confirmed FROM users";
     return jdbcTemplate.query(sql, (resultSet, i) -> {
       UUID id = UUID.fromString(resultSet.getString("id"));
-      String firstName = resultSet.getString("firstName");
-      String lastName = resultSet.getString("lastName");
+      String firstName = resultSet.getString("first_name");
+      String lastName = resultSet.getString("last_name");
       String email = resultSet.getString("email");
       String password = resultSet.getString("password");
-      String isConfirmed = resultSet.getString("isConfirmed");
-      return new User(id, firstName, lastName, email, password, isConfirmed);
+      String genderStr = resultSet.getString("gender");
+      User.Gender gender = User.Gender.valueOf(genderStr);
+      Boolean isConfirmed = resultSet.getBoolean("is_confirmed");
+      return new User(id, firstName, lastName, email, password, gender, isConfirmed);
     });
   }
 
   @Override
-  public int updateUser(UUID id, User user) {
-    String sql = "UPDATE users SET first_name = ?, last_name = ?, email = ?, is_confirmed = ? WHERE id = ?";
+  public int updateFirstName(UUID id, String firstName) {
+    String sql = "UPDATE users SET first_name = ? WHERE id = ?";
 
-    return jdbcTemplate.update(sql, user.getFirstName(), user.getLastName(), user.getEmail(), user.getIsConfirmed(), id);
+    return jdbcTemplate.update(sql, firstName, id);
+  }
+
+  @Override
+  public int updateLastName(UUID id, String lastName) {
+    String sql = "UPDATE users SET last_name = ? WHERE id = ?";
+
+    return jdbcTemplate.update(sql, lastName, id);
+  }
+
+  @Override
+  public int updateEmail(UUID id, String email) {
+    String sql = "UPDATE users SET email = ? WHERE id = ?";
+
+    return jdbcTemplate.update(sql, email, id);
+  }
+
+  @Override
+  public int updateIsConfirmed(UUID id, Boolean isConfirmed) {
+    String sql = "UPDATE users SET is_confirmed = ? WHERE id = ?";
+
+    return jdbcTemplate.update(sql, isConfirmed, id);
   }
 
   @Override

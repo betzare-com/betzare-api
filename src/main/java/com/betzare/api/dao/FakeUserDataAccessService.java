@@ -14,8 +14,8 @@ public class FakeUserDataAccessService implements UserDAO {
   private static List<User> DB = new ArrayList<>();
 
   @Override
-  public int addUser(UUID id, User user) {
-    DB.add(new User(id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getIsConfirmed()));
+  public int createUser(UUID id, User user) {
+    DB.add(new User(id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getGender(), user.getIsConfirmed()));
     return 1;
   }
 
@@ -30,16 +30,36 @@ public class FakeUserDataAccessService implements UserDAO {
   }
 
   @Override
-  public int updateUser(UUID id, User userToUpdate) {
-    return getUser(id).map(user -> {
-      int indexOfUserToUpdate = DB.indexOf(user);
-      if (indexOfUserToUpdate >= 0) {
-        DB.set(indexOfUserToUpdate, new User(id, user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), user.getIsConfirmed()));
-        return 1;
-      }
-      return 0;
-    }).orElse(0);
+  public int updateFirstName(UUID id, String firstName) {
+    return 0;
   }
+
+  @Override
+  public int updateLastName(UUID id, String lastName) {
+    return 0;
+  }
+
+  @Override
+  public int updateEmail(UUID id, String email) {
+    return 0;
+  }
+
+  @Override
+  public int updateIsConfirmed(UUID id, Boolean isConfirmed) {
+    return 0;
+  }
+
+  // @override
+  // public int updateuser(uuid id, user usertoupdate) {
+  //  return getuser(id).map(user -> {
+  //    int indexofusertoupdate = db.indexof(user);
+  //    if (indexofusertoupdate >= 0) {
+  //      db.set(indexofusertoupdate, new user(id, user.getfirstname(), user.getlastname(), user.getemail(), user.getpassword(), user.getisconfirmed()));
+  //      return 1;
+  //    }
+  //    return 0;
+  //  }).orelse(0);
+  //}
 
   @Override
   public int deleteUser(UUID id) {

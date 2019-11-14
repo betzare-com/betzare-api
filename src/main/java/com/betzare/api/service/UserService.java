@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserService {
@@ -20,8 +21,8 @@ public class UserService {
     this.userDAO = userDAO;
   }
 
-  public int addUser(User user) {
-    return userDAO.addUser(user);
+  public int createUser(User user) {
+    return userDAO.createUser(user);
   }
 
   public Optional<User> getUser(UUID id) {
@@ -32,8 +33,22 @@ public class UserService {
     return userDAO.getUsers();
   }
 
-  public int updateUser(UUID id, User userToBeUpdated) {
-    return userDAO.updateUser(id, userToBeUpdated);
+  public void updateUser(UUID id, User user) {
+    Optional.ofNullable(user.getFirstName()).filter(firstName -> !StringUtils.isEmpty(firstName))
+        .map(StringUtils::capitalize).ifPresent(firstName -> {
+      userDAO.updateFirstName(id, firstName);
+    });
+
+    Optional.ofNullable(user.getLastName()).filter(lastName -> !StringUtils.isEmpty(lastName))
+        .map(StringUtils::capitalize).ifPresent(lastName -> {
+      userDAO.updateLastName(id, lastName);
+    });
+
+    Optional.ofNullable(user.getEmail()).filter(email -> !StringUtils.isEmpty(email)).ifPresent(email -> {
+      userDAO.updateEmail(id, email);
+    });
+
+    Optional.ofNullable(userDAO.updateIsConfirmed(id, user.getIsConfirmed()));
   }
 
   public int deleteUser(UUID id) {
