@@ -48,7 +48,9 @@ public class UserService {
       userDAO.updateEmail(id, email);
     });
 
-    Optional.ofNullable(userDAO.updateIsConfirmed(id, user.getIsConfirmed()));
+    Optional.ofNullable(user.getIsConfirmed()).ifPresent(isConfirmed -> {
+      userDAO.updateIsConfirmed(id, user.getIsConfirmed());
+    });
   }
 
   public int deleteUser(UUID id) {
